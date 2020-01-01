@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/screens/home_screen.dart';
+import 'package:my_shop/screens/product_detail_screen.dart';
+
+import './screens/home_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,6 +15,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+      },
     );
   }
 }
