@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/screens/home_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,15 +10,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -25,19 +17,85 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
+  @override
+  State<StatefulWidget> createState() {
+    return _MyHomePageState();
+  }
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var _selectedIndex = 0;
+
+  final _tabs = [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      title: Text('Home'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.view_list),
+      title: Text('Orders'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.favorite),
+      title: Text('Favorites'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.playlist_add),
+      title: Text('Add Product'),
+    ),
+  ];
+
+  final _titles = [
+    'Home',
+    'Orders',
+    'Favorites',
+    'Add Product',
+  ];
+
+  void _didSelectTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Widget _widgetForSelectedTab(BuildContext context) {
+    if (_selectedIndex == 0) {
+      return HomeScreen();
+    } else {
+      return Text('Unknow tab');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text(_titles[_selectedIndex]),
       ),
       body: Center(
-        child: Text('Home page'),
+        child: _widgetForSelectedTab(context),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.black12,
+            ),
+          ),
+        ),
+        child: BottomNavigationBar(
+          items: _tabs,
+          currentIndex: _selectedIndex,
+          onTap: _didSelectTab,
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Colors.black45,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+        ),
       ),
     );
   }
