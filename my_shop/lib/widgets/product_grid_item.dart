@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
 
-import '../models/product.dart';
+import '../providers/product_provider.dart';
 
 class ProductGridItem extends StatelessWidget {
-  final Product product;
-  ProductGridItem(this.product);
+  Function favTapped;
+  ProductGridItem(this.favTapped);
 
-  void didPressFavorite() {}
+  void didPressFavorite(Product product) {
+    product.toggleIsFavorite();
+    favTapped();
+  }
+
   void didPressAddToCart() {}
 
-  void didTapGridItem(BuildContext context) {
+  void didTapGridItem(BuildContext context, Product product) {
     Navigator.of(context).pushNamed(
       ProductDetailScreen.routeName,
       arguments: product.id,
@@ -19,10 +24,11 @@ class ProductGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Product product = Provider.of<Product>(context, listen: false);
     return GridTile(
       child: GestureDetector(
         onTap: () {
-          didTapGridItem(context);
+          didTapGridItem(context, product);
         },
         child: Stack(
           children: <Widget>[
@@ -36,11 +42,19 @@ class ProductGridItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                IconButton(
-                  color: Colors.black38,
-                  icon: Icon(Icons.favorite_border),
-                  onPressed: didPressFavorite,
-                  alignment: Alignment.topRight,
+                Consumer<Product>(
+                  builder: (ctx, product, _) {
+                    return IconButton(
+                      color: (product.isFavorite ? Colors.red : Colors.black38),
+                      icon: Icon(product.isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border),
+                      onPressed: () {
+                        didPressFavorite(product);
+                      },
+                      alignment: Alignment.topRight,
+                    );
+                  },
                 ),
               ],
             ),

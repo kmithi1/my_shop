@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
 
+import './providers/products_provider.dart';
 import './screens/home_screen.dart';
+import './screens/product_detail_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,15 +11,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider.value(
+//      create: (_) => Products(),
+      value: Products(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        routes: {
+          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+        },
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-      routes: {
-        ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-      },
     );
   }
 }
@@ -70,6 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _widgetForSelectedTab(BuildContext context) {
     if (_selectedIndex == 0) {
       return HomeScreen();
+    } else if (_selectedIndex == 2) {
+      return HomeScreen(
+        showOnlyFavorites: true,
+      );
     } else {
       return Text('Unknow tab');
     }
