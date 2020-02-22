@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/screens/product_detail_screen.dart';
+import 'package:my_shop/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/product_provider.dart';
+import '../screens/product_detail_screen.dart';
 
 class ProductGridItem extends StatelessWidget {
-  Function favTapped;
+  final Function favTapped;
   ProductGridItem(this.favTapped);
 
   void didPressFavorite(Product product) {
@@ -13,7 +14,9 @@ class ProductGridItem extends StatelessWidget {
     favTapped();
   }
 
-  void didPressAddToCart() {}
+  void didPressAddToCart(Cart cart, Product product) {
+    cart.addItem(product.id, product.price, product.title, product);
+  }
 
   void didTapGridItem(BuildContext context, Product product) {
     Navigator.of(context).pushNamed(
@@ -25,6 +28,8 @@ class ProductGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Product product = Provider.of<Product>(context, listen: false);
+    Cart cart = Provider.of<Cart>(context, listen: false);
+
     return GridTile(
       child: GestureDetector(
         onTap: () {
@@ -69,7 +74,9 @@ class ProductGridItem extends StatelessWidget {
         ),
         trailing: IconButton(
           icon: Icon(Icons.add_shopping_cart),
-          onPressed: didPressAddToCart,
+          onPressed: () {
+            didPressAddToCart(cart, product);
+          },
           color: Theme.of(context).buttonColor,
         ),
       ),

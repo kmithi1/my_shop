@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/providers/cart_provider.dart';
+import 'package:my_shop/providers/products_provider.dart';
+import 'package:my_shop/screens/cart_screen.dart';
+import 'package:my_shop/widgets/badge.dart';
 import 'package:provider/provider.dart';
 
-import './providers/products_provider.dart';
 import './screens/home_screen.dart';
 import './screens/product_detail_screen.dart';
 
@@ -11,9 +14,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-//      create: (_) => Products(),
-      value: Products(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: Products(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Cart(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -22,6 +31,7 @@ class MyApp extends StatelessWidget {
         home: MyHomePage(title: 'Flutter Demo Home Page'),
         routes: {
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+          CartScreen.routeName: (ctx) => CartScreen(),
         },
       ),
     );
@@ -90,6 +100,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_titles[_selectedIndex]),
+        actions: <Widget>[
+          Consumer<Cart>(
+            builder: (_, cart, child) {
+              if (cart.itemCount > 0) {
+                return Badge(
+                  child: child,
+                  value: cart.itemCount.toString(),
+                );
+              } else {
+                return child;
+              }
+            },
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: _widgetForSelectedTab(context),
