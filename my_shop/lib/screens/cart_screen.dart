@@ -85,7 +85,7 @@ class CartScreen extends StatelessWidget {
         children: <Widget>[
           Icon(
             Icons.shopping_cart,
-            size: 100,
+            size: 150,
             color: Colors.black45,
           ),
           SizedBox(

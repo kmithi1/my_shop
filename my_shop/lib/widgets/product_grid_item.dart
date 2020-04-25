@@ -14,8 +14,23 @@ class ProductGridItem extends StatelessWidget {
     favTapped();
   }
 
-  void didPressAddToCart(Cart cart, Product product) {
+  void didPressAddToCart(Cart cart, Product product, BuildContext ctx) {
     cart.addItem(product.id, product.price, product.title, product);
+    Scaffold.of(ctx).hideCurrentSnackBar();
+    Scaffold.of(ctx).showSnackBar(
+      SnackBar(
+        content: Text("Item added to card"),
+        duration: Duration(
+          seconds: 2,
+        ),
+        action: SnackBarAction(
+          label: "UNDO",
+          onPressed: () {
+            cart.removeItem(product.id);
+          },
+        ),
+      ),
+    );
   }
 
   void didTapGridItem(BuildContext context, Product product) {
@@ -75,7 +90,7 @@ class ProductGridItem extends StatelessWidget {
         trailing: IconButton(
           icon: Icon(Icons.add_shopping_cart),
           onPressed: () {
-            didPressAddToCart(cart, product);
+            didPressAddToCart(cart, product, context);
           },
           color: Theme.of(context).buttonColor,
         ),
