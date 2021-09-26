@@ -1,2 +1,2 @@
 # my_shop
-Flitter app to demo online shop.
+Flutter app to demo online shop.
